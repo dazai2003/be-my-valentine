@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Be My Valentine 💘</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffb6c1, #ffe4e1);
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  text-align: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+}
+
+h1 {
+  color: #ff2e63;
+  font-size: clamp(2rem, 6vw, 3rem);
+  margin-bottom: 10px;
+}
+
+img.main-gif {
+  width: 100%;
+  max-width: 260px;
+  border-radius: 14px;
+  margin: 15px auto;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  position: relative;
+}
+
+button {
+  padding: 14px 28px;
+  font-size: 1.2rem;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  touch-action: manipulation;
+}
+
+#yesBtn {
+  background: #ff2e63;
+  color: white;
+  z-index: 2;
+  position: relative;
+}
+
+#noBtn {
+  background: white;
+  color: #ff2e63;
+  border: 2px solid #ff2e63;
+  position: relative; /* start normal */
+}
+
+#message {
+  margin-top: 15px;
+  min-height: 1.5em;
+  font-size: 1.1rem;
+}
+
+/* Floating hearts */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 1.5rem;
+  animation: floatUp 5s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(-110vh) scale(1.4); opacity: 0; }
+}
+
+/* Copyright text */
+#copyright {
+  margin-top: 25px;
+  font-size: 0.85rem;
+  color: #ff2e63;
+  opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+<div class="container" id="main">
+<h1>Will you be my Valentine? 💕</h1>
+
+<img class="main-gif"
+src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWx0OWU0bnp5djE4YW1ubHI0NXVwZ3J5YnJpZW9kcWp6MDQ0dXUwNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L3SJxLDvuMPhdcD5pA/giphy.gif"
+alt="cute anime gif" />
+
+<div class="buttons">
+  <button id="yesBtn">Yes 💖</button>
+  <button id="noBtn">No 😢</button>
+</div>
+
+<div id="message"></div>
+
+<!-- COPYRIGHT -->
+<div id="copyright">© 2026 Vihanga Wimalaweera</div>
+</div>
+
+<script>
+const noMessages = [
+  "Are you sure, my love? 🥺",
+  "But I really want to be your Valentine 😢",
+  "I’d be very sad… 💔",
+  "We’d be so cute together though 🥹",
+  "Please say yes, pretty please 💕",
+  "I’m asking nicely now 😭"
+];
+
+let noCount = 0;
+let yesScale = 1;
+let noMoves = false;
+
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const message = document.getElementById("message");
+
+// Function to move No button avoiding Yes button
+function moveNoButton() {
+  const padding = 20;
+  const yesRect = yesBtn.getBoundingClientRect();
+  const noWidth = noBtn.offsetWidth;
+  const noHeight = noBtn.offsetHeight;
+
+  let x, y, tries = 0;
+
+  do {
+    x = Math.random() * (window.innerWidth - noWidth - padding);
+    y = Math.random() * (window.innerHeight - noHeight - padding);
+    tries++;
+    if(tries>100) break; // fallback
+  } while (
+    x + noWidth > yesRect.left &&
+    x < yesRect.right &&
+    y + noHeight > yesRect.top &&
+    y < yesRect.bottom
+  );
+
+  noBtn.style.position = 'fixed';
+  noBtn.style.left = `${x}px`;
+  noBtn.style.top = `${y}px`;
+  noBtn.style.transform = 'none';
+}
+
+// No button click
+noBtn.addEventListener("click", () => {
+  message.textContent = noMessages[Math.min(noCount, noMessages.length - 1)];
+
+  yesScale += 0.35;
+  yesBtn.style.transform = `scale(${yesScale})`;
+
+  if(!noMoves) noMoves = true;
+  if(noMoves) moveNoButton();
+
+  noCount++;
+});
+
+// Yes button click
+yesBtn.addEventListener("click", () => {
+  document.body.innerHTML = `
+    <div style="
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+      background:linear-gradient(135deg, #ffd1dc, #ffe4e1);
+      color:#ff2e63;
+      text-align:center;
+      padding:20px;
+    ">
+      <h1 style="font-size:clamp(2.2rem,6vw,3.5rem);">Yay pookie! 💕</h1>
+      <p style="font-size:1.4rem; margin-bottom:20px;">I’m so happy you said yes 🥰</p>
+      <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMm84ajZuOG0zejRlOHJwNTlkdWdxZm02OGtoMjF6dHZrYXN1NGZ2NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1JmGiBtqTuehfYxuy9/giphy.gif"
+      alt="anime couple hug"
+      style="width:100%; max-width:300px; border-radius:16px;" />
+      <p style="font-size:1.3rem; margin-top:20px;">Happy Valentine’s Day 💖</p>
+      <div style="margin-top:20px; font-size:0.85rem; color:#ff2e63; opacity:0.7;">
+        © 2026 Vihanga Wimalaweera
+      </div>
+    </div>
+  `;
+
+  for (let i = 0; i < 25; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = 3 + Math.random() * 3 + "s";
+    document.body.appendChild(heart);
+  }
+});
+</script>
+</body>
+</html>
